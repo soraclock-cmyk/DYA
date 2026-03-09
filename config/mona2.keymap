@@ -45,6 +45,13 @@
             bindings = <&to 0 &macro_param_1to1 &kp MACRO_PLACEHOLDER>;
             label = "TO_LAYER_0";
         };
+
+        ime_macro: ime_macro {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&kp F13>;
+            label = "IME_MACRO";
+        };
     };
 
     behaviors {
@@ -57,22 +64,6 @@
             tapping-term-ms = <200>;
         };
 
-        scroll_up_down: mouse_wheel_up_down {
-            compatible = "zmk,behavior-sensor-rotate";
-            #sensor-binding-cells = <0>;
-            bindings = <&msc SCRL_DOWN>, <&msc SCRL_UP>;
-
-            tap-ms = <20>;
-        };
-
-        scroll_right_left: mouse_wheel_right_left {
-            compatible = "zmk,behavior-sensor-rotate";
-            #sensor-binding-cells = <0>;
-            bindings = <&msc SCRL_LEFT>, <&msc SCRL_RIGHT>;
-
-            tap-ms = <20>;
-        };
-
         // DYA Studio: Runtime sensor rotate behaviors for encoder
         rsr_vol: rsr_vol {
             compatible = "zmk,behavior-runtime-sensor-rotate";
@@ -82,7 +73,7 @@
             ccw-binding = <&kp C_VOL_UP>;
         };
 
-        rsr_scroll: rsr_scroll {
+        rsr_scroll_ud: rsr_scroll_ud {
             compatible = "zmk,behavior-runtime-sensor-rotate";
             #sensor-binding-cells = <0>;
             tap-ms = <20>;
@@ -90,7 +81,7 @@
             ccw-binding = <&msc SCRL_UP>;
         };
 
-        rsr_scroll_h: rsr_scroll_h {
+        rsr_scroll_lr: rsr_scroll_lr {
             compatible = "zmk,behavior-runtime-sensor-rotate";
             #sensor-binding-cells = <0>;
             tap-ms = <20>;
@@ -104,13 +95,13 @@
 
         default_layer {
             bindings = <
-&kp Q             &kp W         &kp E    &kp R          &kp T                                                          &kp Y        &kp U  &kp I      &kp O    &kp P
-&kp A             &kp S         &kp D    &kp F          &kp G                                  &kp F13                 &kp H        &kp J  &kp K      &kp L    &kp SEMICOLON
-&mt LEFT_SHIFT Z  &kp X         &kp C    &kp V          &kp B        &kp F14                   &kp F15                 &kp N        &kp M  &kp COMMA  &kp DOT  &kp SLASH
-&kp LCTRL         &kp LEFT_WIN  &kp F16  &kp BACKSPACE  &lt 2 ENTER  &lt_to_layer_0 3 LANG2    &lt_to_layer_0 3 LANG1  &lt 1 SPACE                             &kp LEFT_ALT
+&kp Q             &kp W         &kp E     &kp R          &kp T                                                               &kp Y        &kp U  &kp I      &kp O    &lt 5 P
+&kp A             &kp S         &kp D     &kp F          &kp G                                  &ime_macro                   &kp H        &kp J  &kp K      &kp L    &kp SEMICOLON
+&mt LEFT_SHIFT Z  &kp X         &kp C     &kp V          &kp B        &trans                    &trans                       &kp N        &kp M  &kp COMMA  &kp DOT  &kp SLASH
+&kp LCTRL         &kp LEFT_WIN  &kp LALT  &kp BACKSPACE  &lt 2 SPACE  &lt_to_layer_0 3 LANG2    &lt_to_layer_0 3 LANGUAGE_1  &lt 1 ENTER                             &kp LEFT_ALT
             >;
 
-            sensor-bindings = <&rsr_scroll>;
+            sensor-bindings = <&rsr_scroll_ud>;
         };
 
         layer_1 {
@@ -121,7 +112,7 @@
 &trans        &trans        &trans            &trans             &trans        &trans    &trans  &trans                                                                   &trans
             >;
 
-            sensor-bindings = <&rsr_scroll_h>;
+            sensor-bindings = <&rsr_scroll_lr>;
         };
 
         layer_2 {
@@ -132,7 +123,7 @@
 &trans           &trans       &trans             &trans      &trans       &trans     &trans   &trans                                             &trans
             >;
 
-            sensor-bindings = <&rsr_scroll>;
+            sensor-bindings = <&rsr_scroll_ud>;
         };
 
         layer_3 {
@@ -154,18 +145,18 @@
 &trans          &trans  &trans  &trans  &trans  &trans    &trans       &trans                                                  &bt BT_CLR_ALL
             >;
 
-            sensor-bindings = <&rsr_scroll>;
+            sensor-bindings = <&rsr_scroll_ud>;
         };
 
         MOUSE {
             bindings = <
-&trans  &trans    &trans    &trans    &trans                    &trans  &trans    &trans    &trans    &trans
-&trans  &mkp MB3  &mkp MB2  &mkp MB1  &trans            &trans  &trans  &mkp MB1  &mkp MB2  &mkp MB3  &trans
-&trans  &trans    &trans    &trans    &trans  &trans    &trans  &trans  &trans    &trans    &trans    &trans
-&trans  &trans    &trans    &trans    &trans  &trans    &trans  &trans                                &trans
+&trans  &trans    &trans    &trans    &trans                                                 &mt LS(LEFT_CONTROL) TAB  &trans    &mkp MB3  &trans  &trans
+&trans  &mkp MB3  &mkp MB2  &mkp MB1  &trans                             &mt LEFT_CONTROL W  &mt LEFT_CONTROL TAB      &mkp MB1  &mkp MB2  &trans  &trans
+&trans  &trans    &trans    &trans    &trans              &trans         &mt LCTRL X         &mt LS(LEFT_CONTROL) T    &mkp MB4  &mkp MB5  &trans  &trans
+&trans  &trans    &trans    &trans    &mt LEFT_CONTROL A  &mt LCTRL Z    &mt LCTRL C         &mt LCTRL V                                           &trans
             >;
 
-            sensor-bindings = <&rsr_scroll>;
+            sensor-bindings = <&rsr_scroll_ud>;
         };
 
         SCROLL {
@@ -176,7 +167,7 @@
 &trans  &trans  &trans  &trans  &trans  &trans    &trans  &trans                          &trans
             >;
 
-            sensor-bindings = <&rsr_scroll>;
+            sensor-bindings = <&rsr_scroll_ud>;
         };
     };
 };
