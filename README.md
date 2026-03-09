@@ -40,3 +40,42 @@ mona2_r.overlay
 };
 
 ```
+
+## DYA Studio対応版のビルド前提（重要）
+
+このリポジトリは ZMK + Zephyr でビルドするため、**ローカルで `west build` する場合は Zephyr SDK が必要**です。
+
+- エラー例: `Could not find a package configuration file provided by "Zephyr-sdk"`
+- これはコード不備ではなく、ローカル開発環境に SDK/ツールチェーンが無い時に発生します。
+
+### 1) 推奨: ZMK公式の開発コンテナを使う
+
+ZMK公式 dev container / GitHub Actions には必要なツールチェーンが含まれるため、
+通常は追加設定なしでビルドできます。
+
+### 2) ローカルに直接入れる場合
+
+1. `west` をインストール
+2. ワークスペース初期化
+3. `west update`
+4. Zephyr SDK をインストール
+5. `west zephyr-export`
+6. `west build`
+
+例:
+
+```bash
+python -m pip install west
+west init -l config
+west update --narrow
+west zephyr-export
+west build -s zmk/app -b seeeduino_xiao_ble -- -DZMK_CONFIG=$PWD/config -DSHIELD="mona2_r rgbled_adapter" -DSNIPPET="studio-rpc-usb-uart"
+```
+
+### 3) このリポジトリでの狙い
+
+- 右手トラックボール: `pmw3610` + runtime input processor
+- 左手エンコーダー: runtime sensor rotate
+- DYA Studio RPC関連モジュール有効化
+
+上記は設定済みのため、**残る失敗要因は主にローカル環境（Zephyr SDK未導入）**です。
