@@ -1,3 +1,5 @@
+// DYA Studio 対応 includes
+
 #include <input/processors.dtsi>
 #include <input/processors/runtime-input-processor.dtsi>
 #include <behaviors/runtime-sensor-rotate.dtsi>
@@ -9,9 +11,23 @@
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/pointing.h>
 
-#define ZMK_POINTING_DEFAULT_SCRL_VAL 100
-#define MOUSE 5
-#define SCROLL 6
+// スクロール感度（DYA Studio から変更可能）
+
+#ifndef ZMK_POINTING_DEFAULT_SCRL_VAL
+
+#define ZMK_POINTING_DEFAULT_SCRL_VAL 60
+
+#endif
+
+// レイヤー定義
+// Win: 0,2,3 / 共通: 1 / Mac: 4,5,6 / 共通: 7-10
+#define MAC_BASE 4
+#define MAC_SYM 5
+#define MAC_NAV 6
+#define BT_LAYER 7
+#define MOUSE_MAC 8
+#define MOUSE_WIN 9
+#define SCROLL 10
 
 &mt {
     flavor = "balanced";
@@ -27,8 +43,8 @@
     combos {
         compatible = "zmk,combos";
 
-        layer4_ESC {
-            bindings = <&lt 4 ESC>;
+        bt_layer_ESC {
+            bindings = <&lt BT_LAYER ESC>;
             key-positions = <39 38>;
         };
 
@@ -64,14 +80,7 @@
             tapping-term-ms = <200>;
         };
 
-        // DYA Studio: Runtime sensor rotate behaviors for encoder
-        rsr_vol: rsr_vol {
-            compatible = "zmk,behavior-runtime-sensor-rotate";
-            #sensor-binding-cells = <0>;
-            tap-ms = <20>;
-            cw-binding = <&kp C_VOL_DN>;
-            ccw-binding = <&kp C_VOL_UP>;
-        };
+        // DYA Studio から設定変更可能なエンコーダビヘイビア
 
         rsr_scroll_ud: rsr_scroll_ud {
             compatible = "zmk,behavior-runtime-sensor-rotate";
@@ -88,23 +97,39 @@
             cw-binding = <&msc SCRL_LEFT>;
             ccw-binding = <&msc SCRL_RIGHT>;
         };
+
+        rsr_vol: rsr_vol {
+            compatible = "zmk,behavior-runtime-sensor-rotate";
+            #sensor-binding-cells = <0>;
+            tap-ms = <20>;
+            cw-binding = <&kp C_VOL_DN>;
+            ccw-binding = <&kp C_VOL_UP>;
+        };
     };
 
     keymap {
         compatible = "zmk,keymap";
 
-        default_layer {
+        // ==========================================
+        // Windows (Layer 0, 2, 3)
+        // ==========================================
+
+        win_base {
             bindings = <
-&kp Q             &kp W         &kp E     &kp R          &kp T                                                               &kp Y        &kp U  &kp I      &kp O    &lt 5 P
-&kp A             &kp S         &kp D     &kp F          &kp G                                  &ime_macro                   &kp H        &kp J  &kp K      &kp L    &kp SEMICOLON
-&mt LEFT_SHIFT Z  &kp X         &kp C     &kp V          &kp B        &trans                    &trans                       &kp N        &kp M  &kp COMMA  &kp DOT  &kp SLASH
-&kp LCTRL         &kp LEFT_WIN  &kp LALT  &kp BACKSPACE  &lt 2 SPACE  &lt_to_layer_0 3 LANG2    &lt_to_layer_0 3 LANGUAGE_1  &lt 1 ENTER                             &kp LEFT_ALT
+&kp Q             &kp W         &kp E     &kp R          &kp T                                                                  &kp Y        &kp U  &kp I      &kp O    &lt MOUSE_WIN P
+&kp A             &kp S         &kp D     &kp F          &kp G                                  &ime_macro                       &kp H        &kp J  &kp K      &kp L    &kp SEMICOLON
+&mt LEFT_SHIFT Z  &kp X         &kp C     &kp V          &kp B        &trans                     &trans                           &kp N        &kp M  &kp COMMA  &kp DOT  &kp SLASH
+&kp LCTRL         &kp LEFT_WIN  &kp LALT  &kp BACKSPACE  &lt 2 SPACE  &lt_to_layer_0 3 LANG2     &lt_to_layer_0 3 LANGUAGE_1      &lt 1 ENTER                             &kp LEFT_ALT
             >;
 
             sensor-bindings = <&rsr_scroll_ud>;
         };
 
-        layer_1 {
+        // ==========================================
+        // 共通: 数字 (Layer 1)
+        // ==========================================
+
+        numbers {
             bindings = <
 &kp NUMBER_1  &kp NUMBER_2  &kp NUMBER_3      &kp NUMBER_4       &kp NUMBER_5                    &kp NUMBER_6  &kp NUMBER_7          &kp NUMBER_8           &kp NUMBER_9  &kp NUMBER_0
 &trans        &trans        &kp LEFT_BRACKET  &kp RIGHT_BRACKET  &trans                  &trans  &trans        &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS  &trans        &kp BACKSLASH
@@ -115,7 +140,11 @@
             sensor-bindings = <&rsr_scroll_lr>;
         };
 
-        layer_2 {
+        // ==========================================
+        // Windows 続き (Layer 2, 3)
+        // ==========================================
+
+        win_symbols {
             bindings = <
 &kp EXCLAMATION  &kp AT_SIGN  &kp POUND          &kp DOLLAR  &kp PERCENT                      &kp CARET  &kp AMPERSAND  &kp ASTERISK  &kp MINUS  &kp UNDERSCORE
 &kp GRAVE        &kp TILDE    &kp DOUBLE_QUOTES  &kp SQT     &trans                  &trans   &mkp MB3   &mkp MB1       &mkp MB2      &kp EQUAL  &kp PLUS
@@ -126,7 +155,7 @@
             sensor-bindings = <&rsr_scroll_ud>;
         };
 
-        layer_3 {
+        win_nav {
             bindings = <
 &trans  &kp LC(LS(TAB))     &kp PRINTSCREEN         &kp LC(TAB)              &trans                                     &trans  &kp HOME        &kp UP_ARROW    &kp END          &trans
 &trans  &kp LG(LEFT_ARROW)  &kp LG(RIGHT_ARROW)     &kp LC(LG(LEFT_ARROW))   &kp LC(LG(RIGHT_ARROW))            &trans  &trans  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &trans
@@ -137,7 +166,49 @@
             sensor-bindings = <&rsr_vol>;
         };
 
-        layer_4 {
+        // ==========================================
+        // Mac (Layer 4-6)
+        // BLEプロファイル1で自動ON（OS Layerモジュール）
+        // ==========================================
+
+        mac_base {
+            bindings = <
+&kp Q             &kp W      &kp E     &kp R          &kp T                                                            &kp Y        &kp U  &kp I      &kp O    &lt MOUSE_MAC P
+&kp A             &kp S      &kp D     &kp F          &kp G                              &ime_macro                    &kp H        &kp J  &kp K      &kp L    &kp SEMICOLON
+&mt LEFT_SHIFT Z  &kp X      &kp C     &kp V          &kp B          &trans               &trans                        &kp N        &kp M  &kp COMMA  &kp DOT  &kp SLASH
+&kp LGUI          &kp LCTRL  &kp LALT  &kp BACKSPACE  &lt MAC_SYM SPACE  &lt MAC_NAV LANG2  &lt MAC_NAV LANGUAGE_1       &lt 1 ENTER                             &kp LALT
+            >;
+
+            sensor-bindings = <&rsr_scroll_ud>;
+        };
+
+        mac_symbols {
+            bindings = <
+&kp EXCLAMATION  &kp AT_SIGN  &kp POUND          &kp DOLLAR  &kp PERCENT                      &kp CARET  &kp AMPERSAND  &kp ASTERISK  &kp MINUS  &kp UNDERSCORE
+&kp GRAVE        &kp TILDE    &kp DOUBLE_QUOTES  &kp SQT     &trans                  &trans   &mkp MB3   &mkp MB1       &mkp MB2      &kp EQUAL  &kp PLUS
+&kp F1           &kp F2       &kp F3             &kp F4      &kp F5       &kp F11    &kp F12  &kp F6     &kp F7         &kp F8        &kp F9     &kp F10
+&trans           &trans       &trans             &trans      &trans       &trans     &trans   &trans                                             &trans
+            >;
+
+            sensor-bindings = <&rsr_scroll_ud>;
+        };
+
+        mac_nav {
+            bindings = <
+&trans  &kp LC(LS(TAB))        &kp LG(LS(NUMBER_4))    &kp LC(TAB)          &trans                                     &trans  &kp HOME        &kp UP_ARROW    &kp END          &trans
+&trans  &kp LC(LA(LEFT_ARROW)) &kp LC(LA(RIGHT_ARROW))  &kp LC(LEFT_ARROW)   &kp LC(RIGHT_ARROW)            &trans      &trans  &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &trans
+&trans  &kp LEFT_SHIFT         &trans                   &trans               &trans                &trans    &trans      &trans  &kp DELETE      &kp PAGE_UP     &kp PAGE_DOWN    &trans
+&trans  &trans                 &trans                   &trans               &trans                &trans    &trans      &trans                                                   &trans
+            >;
+
+            sensor-bindings = <&rsr_vol>;
+        };
+
+        // ==========================================
+        // 共通 (Layer 7-10)
+        // ==========================================
+
+        bt_layer {
             bindings = <
 &studio_unlock  &trans  &trans  &trans  &trans                         &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4
 &trans          &trans  &trans  &trans  &trans            &trans       &trans        &trans        &trans        &trans        &trans
@@ -148,7 +219,18 @@
             sensor-bindings = <&rsr_scroll_ud>;
         };
 
-        MOUSE {
+        mouse_mac {
+            bindings = <
+&trans  &trans    &trans    &trans    &trans                                           &mt LS(LGUI) TAB  &trans    &mkp MB3  &trans  &trans
+&trans  &mkp MB3  &mkp MB2  &mkp MB1  &trans                       &mt LGUI W        &mt LGUI TAB      &mkp MB1  &mkp MB2  &trans  &trans
+&trans  &trans    &trans    &trans    &trans           &trans       &mt LGUI X        &mt LS(LGUI) T    &mkp MB4  &mkp MB5  &trans  &trans
+&trans  &trans    &trans    &trans    &mt LGUI A       &mt LGUI Z   &mt LGUI C        &mt LGUI V                                    &trans
+            >;
+
+            sensor-bindings = <&rsr_scroll_ud>;
+        };
+
+        mouse_win {
             bindings = <
 &trans  &trans    &trans    &trans    &trans                                                 &mt LS(LEFT_CONTROL) TAB  &trans    &mkp MB3  &trans  &trans
 &trans  &mkp MB3  &mkp MB2  &mkp MB1  &trans                             &mt LEFT_CONTROL W  &mt LEFT_CONTROL TAB      &mkp MB1  &mkp MB2  &trans  &trans
@@ -159,7 +241,7 @@
             sensor-bindings = <&rsr_scroll_ud>;
         };
 
-        SCROLL {
+        scroll_layer {
             bindings = <
 &trans  &trans  &trans  &trans  &trans                    &trans  &trans  &trans  &trans  &trans
 &trans  &trans  &trans  &trans  &trans            &trans  &trans  &trans  &trans  &trans  &trans
