@@ -68,7 +68,7 @@
         bt_mac: bt_mac {
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
-            bindings = <&bt BT_SEL 1>, <&to MAC_BASE>;
+            bindings = <&bt BT_SEL 1>, <&to 0>, <&tog MAC_BASE>;
             label = "BT_MAC";
         };
     };
@@ -222,10 +222,10 @@
 
         mouse_mac {
             bindings = <
-&trans  &trans    &trans    &trans    &trans                                           &mt LS(LGUI) TAB  &trans    &mkp MB3  &trans  &trans
-&trans  &mkp MB3  &mkp MB2  &mkp MB1  &trans                       &mt LGUI W        &mt LGUI TAB      &mkp MB1  &mkp MB2  &trans  &trans
-&trans  &trans    &trans    &trans    &trans           &trans       &mt LGUI X        &mt LS(LGUI) T    &mkp MB4  &mkp MB5  &trans  &trans
-&trans  &trans    &trans    &trans    &mt LGUI A       &mt LGUI Z   &mt LGUI C        &mt LGUI V                                    &trans
+&kp ESC  &trans  &kp LS(LG(N5))  &kp LS(LG(N4))  &kp LS(LG(N3))                                                     &kp LA(LG(LEFT))   &trans              &mkp MB3  &trans    &trans
+&trans   &trans  &trans           &trans            &trans                                   &kp LG(W)                 &kp LA(LG(RIGHT))   &mkp MB1            &mkp MB2  &trans    &trans
+&trans   &trans  &trans           &trans            &trans            &trans                 &kp LG(X)                 &kp LS(LG(T))       &mkp MB4  &mkp MB5  &trans    &trans
+&trans   &trans  &trans           &trans            &kp LG(A)         &kp LG(Z)              &kp LG(C)                 &kp LG(V)                                         &trans
             >;
 
             sensor-bindings = <&rsr_scroll_ud>;
