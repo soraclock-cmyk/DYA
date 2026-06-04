@@ -1,51 +1,54 @@
 manifest:
   remotes:
-    - name: cormoran
+    - name: zmkfirmware
+      url-base: https://github.com/zmkfirmware
+    - name: cormoran    # <-- DYA Studio (custom ZMK fork + modules)
       url-base: https://github.com/cormoran
-    - name: badjeff
+    - name: sayu-hub
+      url-base: https://github.com/sayu-hub
+    - name: badjeff    # <-- PMW3610
       url-base: https://github.com/badjeff
-    - name: caksoylar
+    - name: sekigon-gonnoc    # <-- PAW3222
+      url-base: https://github.com/sekigon-gonnoc
+    - name: caksoylar  # <-- RGB LED
       url-base: https://github.com/caksoylar
-
+    - name: zettaface  # <-- Input Processor Keybind
+      url-base: https://github.com/zettaface
   projects:
-    # DYA Studio対応 ZMK (cormoran fork)
+    # ── ZMK 本体は cormoran さんの DYA Studio 対応 fork に切替 ──
     - name: zmk
       remote: cormoran
       revision: v0.3-branch+dya
       import: app/west.yml
-
-    # DYA Studio モジュール群
+    # ── DYA Studio modules ──
     - name: zmk-module-ble-management
       remote: cormoran
       revision: main
-
-    - name: zmk-module-battery-history
-      remote: cormoran
-      revision: main
-
+    # zmk-module-battery-history は使わないので無効化
+    # - name: zmk-module-battery-history
+    #   remote: cormoran
+    #   revision: main
     - name: zmk-module-settings-rpc
       remote: cormoran
       revision: main
-
     - name: zmk-module-runtime-input-processor
       remote: cormoran
       revision: main
-
     - name: zmk-behavior-runtime-sensor-rotate
       remote: cormoran
       revision: main
-
-    # PMW3610 トラックボールドライバー
+    # ── 既存モジュール ──
     - name: zmk-pmw3610-driver
       remote: badjeff
       revision: zmk-0.3
-
-    # RGB LED ウィジェット
-    # 0efe481: zmk_endpoints_selected() API使用 → cormoran v0.3-branch+dya と互換
-    # d9b8ab6以降は zmk_endpoint_get_selected() に戻り非互換になるため固定
+    - name: zmk-driver-paw3222
+      remote: sekigon-gonnoc
+      revision: main
     - name: zmk-rgbled-widget
       remote: caksoylar
-      revision: 0efe4813489edae53781e3a0715204840ac59076
-
+      revision: v0.3
+    - name: zmk-input-processor-keybind
+      remote: zettaface
+      revision: main
   self:
     path: config
